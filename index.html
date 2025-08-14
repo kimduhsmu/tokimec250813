@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <title>TKP통합단가표</title>
+    <title>TKP 통합 단가표 (모바일 최적화)</title>
 
 <!-- manifest 링크 -->
 <link rel="manifest" href="./manifest.json">
@@ -251,6 +251,54 @@
             box-shadow: 0 0 10px #38bdf8;
         }
         html, body {
+	.password-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+.password-modal-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+.password-modal-content {
+    background-color: #1f2937; /* calc-panel color */
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    width: 100%;
+    max-width: 380px;
+    border: 1px solid #374151;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+.password-modal-overlay.show .password-modal-content {
+    transform: translateY(0);
+}
+.password-input {
+    background-color: #374151;
+    border: 1px solid #4b5563;
+    color: #f9fafb;
+    -moz-appearance: textfield; /* Firefox */
+}
+.password-input:focus {
+   --tw-ring-color: #38bdf8;
+   border-color: #38bdf8;
+   outline: none;
+   box-shadow: 0 0 0 2px var(--tw-ring-color);
+}
+.password-error-message {
+    min-height: 1.5rem; /* 24px */
+}		
+
+
+
             min-height: 100dvh;
         }
 </style>
@@ -270,20 +318,21 @@
         <button id="save-current-history" class="history-button">기록</button>
         <button id="view-history-button" class="history-view-button">기록 보기</button>
     </div>
-    <div class="max-w-7xl mx-auto w-full">
+
+	<div id="main-content" class="max-w-7xl mx-auto w-full" style="display: none;">    
  	<div id="selection-screen" class="w-full relative">
     <div class="watermark">한국도키멕 기술연구소</div>
     <div class="watermark-bottom">한국도키멕 기술연구소</div>
              <header class="mb-12 text-center">
-                <h1 class="text-4xl sm:text-5xl font-bold text-white">TKP 통합 단가표 2025.08</h1>
-				<p class="text-center text-gray-400 mb-8">2025.08 기준
+                <h1 class="text-4xl sm:text-5xl font-bold text-white">TKP 통합 단가표 2025.08.01</h1>
+		<p class="text-center text-gray-400 mb-8">2025.08 기준
                 <p class="text-gray-400 mt-4 text-lg">확인하고 싶은 품목을 선택하세요.</p>
 			<div class="mt-6">
             <button id="install-pwa-btn" class="hidden bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-6 rounded-lg transition-colors shadow-lg">
                 <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-6 w-6 mr-2 -mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
-                바로가기 화면추가 
+                화면에 바로가기 만들기
             </button>
         </div>
 
@@ -340,9 +389,9 @@
                          </div>                      
                          <div class="watermark">한국도키멕 기술연구소</div>
                          <div class="p-4 sm:p-6 lg:p-8">
-                            <h1 class="text-2xl sm:text-3xl font-bold text-center calc-header mb-2 pt-16">TKP 표준 실린더 단가표</h1
-							<p class="text-center text-gray-400 mb-8">2025.08 기준																								
-                            <p class="text-center text-gray-400 mb-8">옵션을 선택하여 실시간으로 견적을 확인하세요.</p>
+                            <h1 class="text-2xl sm:text-3xl font-bold text-center calc-header mb-2 pt-16">TKP 표준 실린더 단가표</h1>
+			    <p class="text-center text-gray-400 mb-8">2025.08 기준	
+                            <p class="text-center text-gray-400 mb-8">옵션을 선택하여 실시간으로 견적을 확인하세요.(기준일: 2025-08-01)</p>
 
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
                                 <div class="calc-panel p-6 sm:p-8 rounded-2xl shadow-inner">
@@ -404,7 +453,7 @@
                                 </div>
                             </div>
                         </div>
-                        <footer class="text-center text-gray-500 mt-8 text-sm pb-8"><p>본 계산기는 제공된 가격표를 기준으로 한 예상 견적이며, 실제 금액과 차이가 있을 수 있습니다.</p><p>최종 가격은 별도 협의 후 결정됩니다. (2022-04-14 기준)</p></footer>
+                        <footer class="text-center text-gray-500 mt-8 text-sm pb-8"><p>본 계산기는 제공된 가격표를 기준으로 한 예상 견적이며, 실제 금액과 차이가 있을 수 있습니다.</p><p>최종 가격은 별도 협의 후 결정됩니다. (2025.08 기준)</p></footer>
                         <div class="watermark-bottom">한국도키멕 기술연구소</div>
                     </div>
                 </div>
@@ -422,7 +471,7 @@
                         <div class="p-6 sm:p-8 lg:p-10">
                             <header class="text-center mb-8 pt-16">
                                 <h1 class="text-2xl sm:text-3xl font-bold calc-header">TKP 표준 스위치타입 실린더 단가표</h1>
-                                <p class="text-gray-400 mt-2">옵션을 선택하여 실시간으로 견적을 확인하세요. (기준일: 2025-08-01)</p>
+                                <p class="text-gray-400 mt-2">옵션을 선택하여 실시간으로 견적을 확인하세요. (기준일: 2025.08)</p>
                             </header>
 
                              <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
@@ -548,7 +597,7 @@
                         <div class="watermark">한국도키멕 기술연구소</div>
                         <div class="p-4 sm:p-6 lg:p-8">
                             <h1 class="text-2xl sm:text-3xl font-bold text-center calc-header mb-2 pt-16">TKP 박형 실린더 단가표</h1>
-                            <p class="text-gray-400 mt-2 mb-8 text-center">원하는 사양을 선택하시면 예상 가격이 자동으로 계산됩니다.</p>
+                            <p class="text-gray-400 mt-2 mb-8 text-center">2025.08월 기준.</p>
                             
                              <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
                                 <div class="calc-panel p-6 sm:p-8 rounded-2xl shadow-inner">
@@ -650,7 +699,58 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+	// =======================================================
+// ▼▼▼▼▼▼▼▼▼▼ 비밀번호 기능 관련 코드 ▼▼▼▼▼▼▼▼▼▼
+// =======================================================
+const CORRECT_PASSWORD =['0011', '0012', '0013', `0454`];
 
+const passwordModal = document.getElementById('password-modal');
+const passwordForm = document.getElementById('password-form');
+const passwordInput = document.getElementById('password-input');
+const passwordError = document.getElementById('password-error');
+const mainContent = document.getElementById('main-content');
+const passwordCloseBtn = document.getElementById('password-close-btn');
+
+// 페이지가 로드되면 비밀번호 모달을 즉시 표시
+passwordModal.classList.add('show');
+
+// 비밀번호 입력 폼 제출 이벤트 처리
+passwordForm.addEventListener('submit', function(event) {
+    event.preventDefault(); // 폼의 기본 제출 동작(새로고침)을 막습니다.
+
+    if (CORRECT_PASSWORD.includes(passwordInput.value)) {
+        // 비밀번호가 맞을 경우
+        passwordModal.classList.remove('show'); // 비밀번호 모달 숨기기
+        mainContent.style.display = 'block';    // 숨겨뒀던 메인 콘텐츠 보여주기
+        passwordError.textContent = '';         // 에러 메시지 초기화
+    } else {
+        // 비밀번호가 틀릴 경우
+        passwordError.textContent = '비밀번호가 일치하지 않습니다.'; // 에러 메시지 표시
+        passwordInput.value = ''; // 입력 필드 비우기
+
+        // 입력창을 살짝 흔드는 효과 추가
+        passwordModal.querySelector('.password-modal-content').animate([
+            { transform: 'translateX(0)' },
+            { transform: 'translateX(-10px)' },
+            { transform: 'translateX(10px)' },
+            { transform: 'translateX(-10px)' },
+            { transform: 'translateX(0)' }
+        ], {
+            duration: 300,
+            iterations: 1
+        });
+    }
+});
+
+// 닫기 버튼 클릭 시 (PWA 앱 종료 또는 창 닫기 시도)
+passwordCloseBtn.addEventListener('click', function() {
+    if (confirm('프로그램을 종료하시겠습니까?')) {
+        window.close();
+    }
+});
+// =======================================================
+// ▲▲▲▲▲▲▲▲▲▲ 비밀번호 기능 관련 코드 ▲▲▲▲▲▲▲▲▲▲
+// =======================================================
  // --- PWA 설치 버튼 관련 코드 ---
     const installButton = document.getElementById('install-pwa-btn');
     let deferredPrompt;
@@ -3122,8 +3222,19 @@ if (floatingBtn) {
             });
         }
     </script>
-
+<div id="password-modal" class="password-modal-overlay">
+    <div class="password-modal-content">
+        <h2 class="text-2xl font-bold text-sky-400 text-center mb-4">비밀번호 입력</h2>
+        <p class="text-gray-400 text-center mb-6">계산기에 접근하려면 비밀번호를 입력하세요.</p>
+        <form id="password-form">
+            <input type="password" id="password-input" class="w-full text-center p-3 rounded-lg text-lg password-input" autocomplete="current-password">
+            <p id="password-error" class="text-red-400 text-center mt-2 password-error-message"></p>
+            <div class="mt-6 grid grid-cols-2 gap-4">
+                 <button type="button" id="password-close-btn" class="w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded-lg transition-colors">닫기</button>
+                <button type="submit" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-4 rounded-lg transition-colors">확인</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 </html>
-
-
