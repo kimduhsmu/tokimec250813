@@ -1,5 +1,5 @@
 // sw.js
-const CACHE_NAME = 'tkp-price-list-cache-v3';
+const CACHE_NAME = 'tkp-price-list-cache-v4';
 
 // 현재 서비스워커가 서비스하는 경로(= 배포 경로)를 안전하게 계산
 const SCOPE = self.registration.scope.endsWith('/')
@@ -67,3 +67,4 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+
