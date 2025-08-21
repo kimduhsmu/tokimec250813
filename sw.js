@@ -1,5 +1,5 @@
 // sw.js
-const CACHE_NAME = 'tkp-price-list-cache-v4';
+const CACHE_NAME = 'tkp-price-list-cache-v5';
 
 // 현재 서비스워커가 서비스하는 경로(= 배포 경로)를 안전하게 계산
 const SCOPE = self.registration.scope.endsWith('/')
@@ -31,40 +31,44 @@ self.addEventListener('activate', (event) => {
   );
   self.clients.claim();
 });
-
-// 요청 가로채기(네트워크 우선)
+// 요청 가로채기 (수정된 부분)
 self.addEventListener('fetch', (event) => {
-  // HTML 파일과 같은 중요한 탐색 요청에 대해서만 네트워크 우선 전략 적용
-  if (event.request.mode === 'navigate') {
+  const requestUrl = new URL(event.request.url);
+
+  // index.html 파일은 네트워크 우선 전략 사용
+  // 앱이 실행될 때 가장 중요한 index.html 파일을 무조건 서버에서 먼저 가져오도록 합니다.
+  if (requestUrl.origin === location.origin && (requestUrl.pathname === SCOPE || requestUrl.pathname.endsWith('/index.html'))) {
     event.respondWith(
       fetch(event.request)
-        .then((networkResponse) => {
-          // 네트워크 요청이 성공하면, 응답을 캐시에 저장하고 반환
-          const responseClone = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseClone);
+        .then(response => {
+          // 네트워크 요청이 성공하면, 최신 파일로 캐시를 업데이트하고 사용자에게 보여줍니다.
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseToCache);
           });
-          return networkResponse;
+          return response;
         })
         .catch(() => {
-          // 네트워크 요청이 실패하면(오프라인), 캐시에서 찾아서 반환
+          // 만약 비행기 모드 등 인터넷이 안될 경우에만, 어쩔 수 없이 캐시에 저장된 구버전을 보여줍니다.
           return caches.match(event.request);
         })
     );
     return;
   }
 
-  // 이미지, CSS, JS 등 기타 정적 파일은 기존의 캐시 우선 전략 사용 (성능 최적화)
+  // 다른 모든 파일(이미지, manifest 등)은 기존처럼 캐시 우선 전략 사용
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      return cachedResponse || fetch(event.request).then((networkResponse) => {
-        const responseClone = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseClone);
-        });
-        return networkResponse;
-      });
+    caches.match(event.request, { ignoreSearch: true }).then((cached) => {
+      return (
+        cached ||
+        fetch(event.request).then((res) => {
+          const resClone = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, resClone));
+          return res;
+        })
+      );
     })
   );
 });
+
 
