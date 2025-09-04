@@ -952,20 +952,16 @@ const passwordError = document.getElementById('password-error');
 const mainContent = document.getElementById('main-content');
 const passwordCloseBtn = document.getElementById('password-close-btn');
 
-// 페이지가 로드되면 비밀번호 모달을 즉시 표시
 passwordModal.classList.add('show');
-
-// 비밀번호 입력 폼 제출 이벤트 처리
 passwordForm.addEventListener('submit', function(event) {
     event.preventDefault(); // 폼의 기본 제출 동작(새로고침)을 막습니다.
 
     if (CORRECT_PASSWORD.includes(passwordInput.value)) {
-        // 비밀번호가 맞을 경우
-        passwordModal.classList.remove('show'); // 비밀번호 모달 숨기기
-        mainContent.style.display = 'block';    // 숨겨뒀던 메인 콘텐츠 보여주기
-        passwordError.textContent = '';         // 에러 메시지 초기화
+        passwordModal.classList.remove('show');
+        mainContent.style.display = 'block';    
+        passwordError.textContent = '';         
     } else {
-        // 비밀번호가 틀릴 경우
+        
         passwordError.textContent = '비밀번호가 일치하지 않습니다.'; // 에러 메시지 표시
         passwordInput.value = ''; // 입력 필드 비우기
 
@@ -989,9 +985,8 @@ passwordCloseBtn.addEventListener('click', function() {
         window.close();
     }
 });
-// =======================================================
-// ▲▲▲▲▲▲▲▲▲▲ 비밀번호 기능 관련 코드 ▲▲▲▲▲▲▲▲▲▲
-// =======================================================
+
+
  // --- PWA 설치 버튼 관련 코드 ---
     const installButton = document.getElementById('install-pwa-btn');
     let deferredPrompt;
@@ -1215,7 +1210,12 @@ function renderHistory(type) {
         if(contentToShow) contentToShow.classList.add('active');
 
        floatingBtn.classList.add('show');
-       floatingHistoryContainer.classList.add('show');
+// 연락처일 때만 기록 버튼 숨김, 그 외에는 표시
+if (type === 'contact') {
+  floatingHistoryContainer.classList.remove('show');
+} else {
+  floatingHistoryContainer.classList.add('show');
+}
     }
 
     // --- History & Navigation Logic (FIXED) ---
@@ -3485,10 +3485,3 @@ if (floatingBtn) {
 </div>
 
 </html>
-
-
-
-
-
-
-
