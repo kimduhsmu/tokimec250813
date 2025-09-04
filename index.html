@@ -297,10 +297,12 @@
     min-height: 1.5rem; /* 24px */
 }		
 
-
+#contact-table-body td, #contact-table-body th {
+            white-space: nowrap;
+        }
 
             min-height: 100dvh;
-        }
+        
 </style>
 </head>
 <body class="p-4 sm:p-6 lg:p-8 flex justify-center min-h-screen">
@@ -319,13 +321,17 @@
         <button id="view-history-button" class="history-view-button">기록 보기</button>
     </div>
 
-	<div id="main-content" class="max-w-7xl mx-auto w-full" style="display: none;">    
+	<div id="main-content" class="max-w-7xl mx-auto w-full">
  	<div id="selection-screen" class="w-full relative">
     <div class="watermark">한국도키멕 기술연구소</div>
     <div class="watermark-bottom">한국도키멕 기술연구소</div>
              <header class="mb-12 text-center">
                 <h1 class="text-4xl sm:text-5xl font-bold text-white">TKP 통합 단가표 2025.08월</h1>
-		<p class="text-center text-gray-400 mb-8">2025.08월 기준
+		<div class="flex justify-center items-center gap-4 text-gray-400 mb-8 mt-2">
+  		  <p>2025.08월 기준</p>
+    	<span class="text-gray-600">|</span>
+    		<a href="#" id="select-contact-link" class="underline hover:text-sky-400 transition-colors">연락처</a>
+		</div>
                 <p class="text-gray-400 mt-4 text-lg">확인하고 싶은 품목을 선택하세요.</p>
 			<div class="mt-6">
             <button id="install-pwa-btn" class="hidden bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-6 rounded-lg transition-colors shadow-lg">
@@ -375,6 +381,11 @@
                 <button id="tab-valve" class="tab-button text-base sm:text-lg font-semibold py-3 px-4 sm:px-6 border-b-2">
                     TKP 밸브
                 </button>
+		<button id="tab-contact" class="tab-button text-base sm:text-lg font-semibold py-3 px-4 sm:px-6 border-b-2">
+    연락처
+</button>
+
+
             </div>
 
             <div>
@@ -457,6 +468,52 @@
                         <div class="watermark-bottom">한국도키멕 기술연구소</div>
                     </div>
                 </div>
+
+<div id="content-contact" class="tab-content">
+    <div class="calc-body relative rounded-2xl shadow-2xl antialiased">
+        <div class="absolute top-4 left-4 right-4 flex justify-between z-10 px-2 sm:px-4">
+            <button class="back-button">뒤로</button>
+        </div>
+        <div class="watermark">연락처</div>
+        <div class="p-4 sm:p-6 lg:p-8">
+            <h1 class="text-2xl sm:text-3xl font-bold text-center calc-header mb-2 pt-16">연락처 목록</h1>
+            <p class="text-center text-gray-400 mb-8">아래 필터를 사용하여 검색하세요.</p>
+
+            <div class="max-w-4xl mx-auto">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 p-4 bg-gray-900/50 rounded-lg items-center">
+                    <select id="department-filter" class="calc-select rounded-md p-2.5 text-white"></select>
+                    <select id="position-filter" class="calc-select rounded-md p-2.5 text-white"></select>
+                    <input type="text" id="name-search-input" placeholder="이름으로 검색..." class="sm:col-span-1 w-full calc-input rounded-md p-2.5 text-white">
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-gray-300">
+                        <thead class="text-xs text-gray-200 uppercase bg-gray-700">
+                            <tr>
+                                <th class="p-3 text-center">부서</th>
+                                <th class="p-3 text-center">직책</th>
+                                <th class="p-3 text-center">이름</th>
+                                <th class="p-3 text-center">내선</th>
+                                <th class="p-3 text-center">휴대폰</th>
+                                <th class="p-3 text-center">이메일</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contact-table-body" class="bg-gray-800">
+                            </tbody>
+                    </table>
+                </div>
+                <p id="contact-no-results" class="text-center text-gray-500 mt-8 hidden">검색 결과가 없습니다.</p>
+            </div>
+        </div>
+        <div class="watermark-bottom">연락처</div>
+    </div>
+</div>
+
+
+
+
+
+
 
                 <!-- ===================================================================== -->
                 <!-- 2. 표준 실린더 (스위치) (Standard Cylinder with Switch)                -->
@@ -699,9 +756,193 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-	// =======================================================
-// ▼▼▼▼▼▼▼▼▼▼ 비밀번호 기능 관련 코드 ▼▼▼▼▼▼▼▼▼▼
-// =======================================================
+
+// --- 연락처 데이터 및 기능 ---
+const contactData = [
+        { department: "본사", position: "대표이사", role: null, name: "조홍래", extension: "4601", phone: "011-449-3271", email: "hrcho@tokimec.co.kr" },
+        { department: "대구공장", position: "대표이사", role: null, name: "조홍래", extension: "4687", phone: "053-611-2590", email: "hrcho@tokimec.co.kr" },
+        { department: "산기시스템팀", position: "상무(B.U장)", role: null, name: "배성배", extension: "4631", phone: "010-8739-5859", email: "sbbee@tokimec.co.kr" },
+        { department: "산기시스템팀", position: "부장", role: "팀장", name: "이동헌", extension: "4632", phone: "010-6631-8831", email: "phillip@tokimec.co.kr" },
+        { department: "산기시스템팀", position: "과장", role: null, name: "이준창", extension: "4650", phone: "010-5385-0623", email: "ljch89@tokimec.co.kr" },
+        { department: "산기시스템팀", position: "과장", role: null, name: "김민호", extension: "4644", phone: "010-9730-4003", email: "souu2@tokimec.co.kr" },
+        { department: "산기시스템팀", position: "대리", role: null, name: "조홍식", extension: "4636", phone: "010-6418-6808", email: "hook0502@tokimec.co.kr" },
+        { department: "산기시스템팀", position: "대리", role: null, name: "손기정", extension: "4672", phone: "010-4057-8397", email: "gjson91@tokimec.co.kr" },
+        { department: "기술선행팀", position: "부장", role: "팀장", name: "박성일", extension: "4685", phone: "010-8725-3552", email: "sjpark@tokimec.co.kr" },
+        { department: "기술선행팀", position: "차장", role: null, name: "장형선", extension: "4617", phone: "010-7685-0522", email: "Jhs@tokimec.co.kr" },
+        { department: "기술선행팀", position: "차장", role: null, name: "조승현", extension: "4620", phone: "010-8432-7777", email: "cho908@tokimec.co.kr" },
+        { department: "기술선행팀", position: "주임", role: null, name: "이치헌", extension: "4633", phone: "010-2309-0952", email: "chiee0952@tokimec.co.kr" },
+        { department: "PMC B.U", position: "이사", role: "B.U장", name: "박세훈", extension: "4720/4721", phone: "010-3458-7270", email: "shpark@tokimec.co.kr" },
+        { department: "수급경영팀", position: "과장", role: null, name: "최선종", extension: "4603", phone: "010-4179-3136", email: "csj3136@tokimec.co.kr" },
+        { department: "수급경영팀", position: "과장", role: null, name: "박희정", extension: "4684", phone: "010-3170-6271", email: "hj6271@tokimec.co.kr" },
+        { department: "수급경영팀", position: "사원", role: null, name: "최고은", extension: "4637", phone: "010-5730-3234", email: "cge98@tokimec.co.kr" },
+        { department: "구로매장", position: "직장", role: null, name: "조성환", extension: "02-2676-7132(7133)", phone: "010-8653-5581", email: "shcho@tokimec.co.kr" },
+        { department: "구로매장", position: "직장", role: null, name: "조성환", extension: "(4625) (4626) (4267)", phone: "010-8653-5581", email: "shcho@tokimec.co.kr" },
+        { department: "구로매장", position: "사원", role: null, name: "양상일", extension: null, phone: "010-5676-7703", email: "" },
+        { department: "충청영업팀", position: "부장(팀장)", role: null, name: "허성필", extension: "4635", phone: "010-5363-9661", email: "spheo@tokimec.co.kr" },
+        { department: "충청영업팀", position: "차장", role: null, name: "허기준", extension: "4635", phone: "010-3618-3187", email: "gjheo@tokimec.co.kr" },
+        { department: "충청영업팀", position: "대리", role: null, name: "이우원", extension: "4612", phone: "010-7382-6234", email: "uwlee@tokimec.co.kr" },
+        { department: "호남영업팀", position: "부장(팀장)", role: null, name: "이동기", extension: "4652", phone: "010-9054-4125", email: "jamesldk@tokimec.co.kr" },
+        { department: "호남영업팀", position: "차장", role: null, name: "임광택", extension: "4634", phone: "010-8894-7541", email: "ktim@tokimec.co.kr" },
+        { department: "호남영업팀", position: "과장", role: null, name: "김학삼", extension: "4727", phone: "010-28719-4860", email: "khs77@tokimec.co.kr" },
+        { department: "건기시스템팀", position: "부장(팀장)", role: null, name: "이정훈", extension: "4638", phone: "010-6411-9376", email: "tnut98@tokimec.co.kr" },
+        { department: "건기시스템팀", position: "과장", role: null, name: "유창선", extension: "4660", phone: "010-4147-5888", email: "csyoo@tokimec.co.kr" },
+        { department: "건기시스템팀", position: "대리", role: null, name: "김병열", extension: "4622", phone: "010-8548-5468", email: "kby5468@tokimec.co.kr" },
+        { department: "공압사업팀", position: "부장(팀장)", role: null, name: "정대영", extension: "4663", phone: "010-3754-0980", email: "dyjeong@tokimec.co.kr" },
+        { department: "공압사업팀", position: "과장", role: null, name: "유동건", extension: "4647", phone: "010-3007-1217", email: "ydg1217@tokimec.co.kr" },
+        { department: "공압사업팀", position: "과장", role: null, name: "유정인", extension: "4729", phone: "010-5575-7592", email: "rji7592@tokimec.co.kr" },
+        { department: "공압사업팀", position: "주임", role: null, name: "구태훈", extension: "4647", phone: "010-6539-0800", email: "xogns0328@tokimec.co.kr" },
+        { department: "발안물류", position: "계장", role: null, name: "정봉례", extension: "4628", phone: "010-4845-3953", email: "dusgh@tokimec.co.kr" },
+        { department: "발안물류", position: "계장", role: null, name: "정봉례", extension: "031-366-6523", phone: "010-4845-3953", email: "dusgh@tokimec.co.kr" },
+        { department: "재무회계팀", position: "부장(팀장)", role: null, name: "황수석", extension: "4623", phone: "010-6221-3884", email: "sshwang@tokimec.co.kr" },
+        { department: "재무회계팀", position: "과장", role: null, name: "차은지", extension: "4651", phone: "010-4802-0596", email: "Jalja3@tokimec.co.kr" },
+        { department: "재무회계팀", position: "사원", role: null, name: "김보미", extension: "4605", phone: "010-8586-7361", email: "haha227@tokimec.co.kr" },
+        { department: "제어자동화 SB.U", position: "담당(SB.U장)", role: null, name: "조재문", extension: "4678", phone: "010-3264-9857", email: "jmcho@tokimec.co.kr" },
+        { department: "FA기술영업팀", position: "차장(서브팀장)", role: null, name: "이병용", extension: "4673", phone: "010-2647-1980", email: "Iby2117@tokimec.co.kr" },
+        { department: "FA기술영업팀", position: "대리", role: null, name: "윤성현", extension: "4658", phone: "010-3066-6711", email: "ysh6711@tokimec.co.kr" },
+        { department: "제어생기", position: "과장", role: null, name: "추영훈", extension: "4731", phone: "010-6711-3730", email: "choo88@tokimec.co.kr" },
+        { department: "제어생기", position: "과장", role: null, name: "이민규", extension: "4731", phone: "010-8402-1400", email: "mklee1400@tokimec.co.kr" },
+        { department: "제어생기", position: "대리", role: null, name: "서덕민", extension: "4731", phone: "010-5394-6149", email: "yhg1515@tokimec.co.kr" },
+        { department: "제어생기", position: "대리", role: null, name: "조진혁", extension: "4697", phone: "010-8388-5906", email: "roalroal100@tokimec.co.kr" },
+        { department: "제어생기", position: "사원", role: null, name: "김준혁", extension: "4731", phone: "010-4732-1345", email: "Jhikim2504@tokimec.co.kr" },
+        { department: "A.C.T.팀", position: "차장", role: "서브팀장", name: "원우석", extension: "4630", phone: "010-4901-1110", email: "ds7770@tokimec.co.kr" },
+        { department: "A.C.T.팀", position: "사원", role: null, name: "김경미", extension: "4726", phone: "010-2820-9599", email: "kimgm@tokimec.co.kr" },
+        { department: "A.C.T.팀", position: "사원", role: null, name: "김준모", extension: "4619", phone: "010-2075-7120", email: "joonmos95@tokimec.co.kr" },
+        { department: "P&M시스템팀", position: "차장", role: "서브팀장", name: "이성화", extension: "4613", phone: "010-6352-0791", email: "scdj@tokimec.co.kr" },
+        { department: "P&M시스템팀", position: "대리", role: null, name: "임종현", extension: "4604", phone: "010-5711-8589", email: "jh@tokimec.co.kr" },
+        { department: "기획/생산 B.U", position: "이사", role: "B.U장", name: "조현우", extension: "4653", phone: "010-8871-7472", email: "hwcho@tokimec.co.kr" },
+        { department: "수급경영팀", position: "대리", role: null, name: "유영후", extension: "4646", phone: "010-9129-4386", email: "yhh726@tokimec.co.kr" },
+        { department: "수급경영팀", position: "차장", role: "서브팀장", name: "김용혁", extension: "4655", phone: "010-4880-4690", email: "yhkim@tokimec.co.kr" },
+        { department: "수급경영팀", position: "대리", role: null, name: "이민희", extension: "4616", phone: "010-4448-2792", email: "minhee147@tokimec.co.kr" },
+        { department: "수급경영팀", position: "계장", role: "조장", name: "고현석", extension: "", phone: "010-4666-0225", email: "khs83@tokimec.co.kr" },
+        { department: "수급경영팀", position: "주임", role: "조장", name: "주현재", extension: "4657", phone: "010-9741-0799", email: "jhj0709@tokimec.co.kr" },
+        { department: "기획선행팀", position: "차장", role: "서브팀장", name: "최치웅", extension: "4624", phone: "010-9732-7722", email: "blue7ung@tokimec.co.kr" },
+        { department: "기획선행팀", position: "부장", role: null, name: "탁정환", extension: "4621", phone: "010-2248-7332", email: "apex74@tokimec.co.kr" },
+        { department: "기획선행팀", position: "주임", role: null, name: "우형록", extension: "4614", phone: "010-4706-2644", email: "whr754@tokimec.co.kr" },
+        { department: "생산 SB.U", position: "담당", role: "SB.U장", name: "이한묵", extension: "4692", phone: "010-5423-9545", email: "mook482@tokimec.co.kr" },
+        { department: "품질기술팀", position: "대리", role: null, name: "권영진", extension: "4686", phone: "010-9464-1548", email: "yjkwon@tokimec.co.kr" },
+        { department: "품질기술팀", position: "대리", role: null, name: "감요한", extension: "4682", phone: "010-2256-0895", email: "kyh0895@tokimec.co.kr" },
+        { department: "품질기술팀", position: "기장", role: "직장", name: "김관배", extension: "4640", phone: "010-8596-1290", email: "kbkim@tokimec.co.kr" },
+        { department: "품질기술팀", position: "계장", role: "조장", name: "윤상호", extension: "4640", phone: "010-3817-0854", email: "" },
+        { department: "품질기술팀", position: "계장", role: "조장", name: "강기정", extension: "4640", phone: "010-8593-3766", email: "" },
+        { department: "품질기술팀", position: "계장", role: "조장", name: "최진원", extension: "4640", phone: "010-6664-8055", email: "" },
+        { department: "생산기술팀", position: "차장", role: null, name: "최재혁", extension: "4724", phone: "010-9984-2984", email: "sunsky0408@tokimec.co.kr" },
+        { department: "생산기술팀", position: "차장", role: null, name: "오상민", extension: "4648", phone: "010-7163-9700", email: "osm@tokimec.co.kr" },
+        { department: "생산기술팀", position: "과장", role: null, name: "양승태", extension: "4698", phone: "010-2620-8926", email: "styang@tokimec.co.kr" },
+        { department: "생산기술팀", position: "대리", role: null, name: "조은영", extension: "4676", phone: "010-2533-2823", email: "jey@tokimec.co.kr" },
+        { department: "생산기술팀", position: "주임", role: null, name: "박신석", extension: "4689", phone: "010-4594-8506", email: "shinsuk5606@tokimec.co.kr" },
+        { department: "생산기술팀", position: "주임", role: "조장", name: "하창수", extension: "4657", phone: "010-7768-7773", email: "" },
+        { department: "생산기술팀", position: "주임", role: "조장", name: "윤현민", extension: "4726", phone: "010-4448-2774", email: "" },
+        { department: "생산기술팀", position: "주임", role: null, name: "손희찬", extension: "4657", phone: "010-5789-4659", email: "" },
+        { department: "생산기술팀", position: "기사보", role: null, name: "김현우", extension: "4690", phone: "010-8868-3991", email: "khw3991@tokimec.co.kr" },
+        { department: "생산기술팀", position: "사원", role: null, name: "김대진", extension: "4726", phone: "010-5657-0882", email: "" },
+        { department: "P M ", position: "부장", role: "SB-U장", name: "윤영식", extension: "4680", phone: "010-4557-8549", email: "yoon1204@tokimec.co.kr" },
+        { department: "P M 영업", position: "부장", role: null, name: "설효준", extension: "4645", phone: "010-2339-4835", email: "shjune@tokimec.co.kr" },
+        { department: "P M 생기", position: "차장", role: null, name: "이윤배", extension: "4674", phone: "010-4749-7020", email: "yblee@tokimec.co.kr" },
+        { department: "R&BD", position: "이사", role: "소장", name: "류정호", extension: "4677", phone: "010-5474-3316", email: "ryujh@tokimec.co.kr" },
+        { department: "메카트로기술팀", position: "과장", role: "서브팀장", name: "박재영", extension: "4649", phone: "010-7697-7178", email: "pjy7178@tokimec.co.kr" },
+        { department: "메카트로기술팀", position: "대리", role: null, name: "은상원", extension: "4656", phone: "010-5886-2709", email: "sweun@tokimec.co.kr" },
+        { department: "메카트로기술팀", position: "대리", role: null, name: "김홍재", extension: "4607", phone: "010-4370-0114", email: "khj5757@tokimec.co.kr" },
+        { department: "메카트로기술팀", position: "주임", role: null, name: "이규환", extension: "4736", phone: "010-2311-6647", email: "rbghks0905@tokimec.co.kr" },
+        { department: "시스템기술팀", position: "부장", role: "팀장", name: "양기호", extension: "4691", phone: "010-5384-6062", email: "sheepsign@tokimec.co.kr" },
+        { department: "시스템기술팀", position: "차장", role: null, name: "김주석", extension: "4722", phone: "010-8572-0454", email: "kjs@tokimec.co.kr" },
+        { department: "시스템기술팀", position: "과장", role: null, name: "박시현", extension: "4725", phone: "010-2503-2909", email: "psh7@tokimec.co.kr" },
+        { department: "시스템기술팀", position: "과장", role: null, name: "서민규", extension: "4693", phone: "010-3308-8723", email: "smk2616@tokimec.co.kr" },
+        { department: "시스템기술팀", position: "사원", role: null, name: "최준우", extension: "4723", phone: "010-8892-9765", email: "jwc9766@tokimec.co.kr" },
+        { department: "영남사업팀", position: "부장", role: "팀장", name: "안종성", extension: "4668", phone: "010-2593-3047", email: "jsa@tokimec.co.kr" },
+        { department: "영남사업팀", position: "차장", role: null, name: "박진완", extension: "4641", phone: "010-5447-4348", email: "jwpark@tokimec.co.kr" },
+        { department: "영남사업팀", position: "차장", role: null, name: "김수민", extension: "4694", phone: "010-9031-1329", email: "ksm1329@tokimec.co.kr" },
+        { department: "영남사업팀", position: "사원", role: null, name: "주은영", extension: "4695", phone: "010-8745-8649", email: "jooey1102@tokimec.co.kr" },
+        { department: "영남사업팀", position: "기사", role: null, name: "진홍성", extension: "4696", phone: "010-6428-0897", email: "jhs1@tokimec.co.kr" },
+        { department: "공기사업팀", position: "차장", role: "서브팀장", name: "정시훈", extension: "4669", phone: "010-9919-8258", email: "junsik@tokimec.co.kr" },
+        { department: "공기사업팀", position: "주임", role: null, name: "이재승", extension: "4662", phone: "010-4311-8483", email: "ljs71@tokimec.co.kr" },
+        { department: "공압시스템팀", position: "부장", role: "팀장", name: "우기윤", extension: "4667", phone: "010-4830-4795", email: "kywoo@tokimec.co.kr" },
+        { department: "공압시스템팀", position: "과장", role: null, name: "이헌민", extension: "4670", phone: "010-9918-1092", email: "lhm1225@tokimec.co.kr" },
+        { department: "공압시스템팀", position: "대리", role: null, name: "박민성", extension: "4670", phone: "010-4801-8335", email: "mspark@tokimec.co.kr" },
+        { department: "공압시스템팀", position: "주임", role: null, name: "김무성", extension: "4670", phone: "010-8526-2686", email: "kms2686@tokimec.co.kr" },
+        { department: "중국공장", position: "총경리", role: null, name: "조정근", extension: "070-7596-5608", phone: "86-186-5150-9990", email: "whwjdrms3015@naver.com" },
+        { department: "중국공장", position: "품질총감", role: null, name: "김헌태", extension: "", phone: "86-186-9493-2700", email: "tokimec2024@126.com" },
+        { department: "중국공장", position: "과장", role: null, name: "고몽기", extension: "070-4005-8600", phone: "86-138-1228-3139", email: "1368805823@qq.com" },
+        { department: "사내벤처", position: "대표", role: null, name: "김민창", extension: "동학이엔지(GATE1)", phone: "010-4518-0508", email: "" },
+        { department: "사내벤처", position: "대표", role: null, name: "최성남", extension: "유진공업(GATE1)", phone: "010-7562-3136", email: "" },
+        { department: "사내벤처", position: "대표", role: null, name: "황석출", extension: "조은테크(GATE1)", phone: "010-8855-6965", email: "" },
+        { department: "사내벤처", position: "대표", role: null, name: "김민수", extension: "풍광테크(GATE1)", phone: "010-8239-1363", email: "" },
+        { department: "사내벤처", position: "대표", role: null, name: "정일현", extension: "한울(GATE1)", phone: "010-8713-4152", email: "" },
+        { department: "사내벤처", position: "대표", role: null, name: "오성석", extension: "다솔이엔지(GATE2)", phone: "010-6247-0432", email: "" },
+        { department: "사내벤처", position: "대표", role: null, name: "김영민", extension: "원준이엔지(GATE2)", phone: "010-9428-5181", email: "" },
+        { department: "사내벤처", position: "대표", role: null, name: "김철구", extension: "더인유압(GATE2)", phone: "010-2050-6799", email: "" },
+        { department: "사내벤처", position: "대표", role: null, name: "이현진", extension: "지산(GATE2)", phone: "010-9353-0808", email: "" },
+        { department: "사내벤처", position: "대표", role: null, name: "송호승", extension: "삼영(GATE2)", phone: "010-8570-6070", email: "" },
+        { department: "지입차", position: "지입차", role: null, name: "전기성", extension: "", phone: "010-2236-5871", email: "" }
+];
+
+function setupContactPage() {
+    const departmentFilter = document.getElementById('department-filter');
+    const positionFilter = document.getElementById('position-filter');
+    const nameSearchInput = document.getElementById('name-search-input');
+    const tableBody = document.getElementById('contact-table-body');
+    const noResultsMsg = document.getElementById('contact-no-results');
+
+    if (!departmentFilter) return; // 연락처 페이지가 아니면 함수 종료
+
+    function populateFilters() {
+        const departments = ['모든 부서', ...new Set(contactData.map(c => c.department))];
+        const positions = ['모든 직책', ...new Set(contactData.map(c => c.position.split('(')[0].trim()))];
+
+        departmentFilter.innerHTML = departments.map(d => `<option value="${d}">${d}</option>`).join('');
+        positionFilter.innerHTML = positions.map(p => `<option value="${p}">${p}</option>`).join('');
+    }
+
+    function renderTable(data) {
+        if (data.length === 0) {
+            tableBody.innerHTML = '';
+            noResultsMsg.style.display = 'block';
+            return;
+        }
+        noResultsMsg.style.display = 'none';
+        tableBody.innerHTML = data.map(contact => {
+            const displayPosition = `${contact.position}${contact.role ? ` (${contact.role})` : ''}`;
+            
+            return `
+                <tr class="hover:bg-gray-700 transition-colors">
+                    <td class="p-3 text-center">${contact.department || '-'}</td>
+                    <td class="p-3 text-center">${displayPosition}</td>
+                    <td class="p-3 text-center">${contact.name || '-'}</td>
+                    <td class="p-3 text-center">${contact.extension || '-'}</td>
+                    <td class="p-3 text-center"><a href="tel:${contact.phone}" class="text-sky-400 hover:underline">${contact.phone || '-'}</a></td>
+                    <td class="p-3 text-center"><a href="mailto:${contact.email}" class="text-sky-400 hover:underline">${contact.email || '-'}</a></td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function applyFilters() {
+        const department = departmentFilter.value;
+        const position = positionFilter.value;
+        const searchTerm = nameSearchInput.value.toLowerCase();
+
+        const filteredData = contactData.filter(contact => {
+            const departmentMatch = (department === '모든 부서' || contact.department === department);
+            const positionMatch = (position === '모든 직책' || contact.position.startsWith(position));
+            const nameMatch = contact.name.toLowerCase().includes(searchTerm);
+            return departmentMatch && positionMatch && nameMatch;
+        });
+
+        renderTable(filteredData);
+    }
+
+    populateFilters();
+    renderTable(contactData);
+
+    departmentFilter.addEventListener('change', applyFilters);
+    positionFilter.addEventListener('change', applyFilters);
+    nameSearchInput.addEventListener('input', applyFilters);
+}
+// --- 연락처 기능 끝 ---
+
+
+
+
+
 const CORRECT_PASSWORD =['0011', '0012', '0013', `0014`];
 
 const passwordModal = document.getElementById('password-modal');
@@ -954,6 +1195,9 @@ function renderHistory(type) {
     const backButtons = document.querySelectorAll('.back-button');
     const tabs = document.querySelectorAll('.tab-button');
     const contents = document.querySelectorAll('.tab-content');
+   const selectContactLink = document.getElementById('select-contact-link');
+    
+
 
     // --- UI Display Function ---
     function displayCalculator(type) {
@@ -1235,6 +1479,11 @@ function saveAndShowHistory(item) {
     selectStdSwBtn.addEventListener('click', () => navigateToCalculator('std-sw'));
     selectCmpBtn.addEventListener('click', () => navigateToCalculator('cmp'));
     selectValveBtn.addEventListener('click', () => navigateToCalculator('valve'));
+  selectContactLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    navigateToCalculator('contact');
+    setTimeout(setupContactPage, 50); // 연락처 페이지 기능 실행
+});
 
     // On-screen back buttons now use the browser's history function
     backButtons.forEach(button => {
@@ -3222,8 +3471,8 @@ if (floatingBtn) {
     <div class="password-modal-content">
         <h2 class="text-2xl font-bold text-sky-400 text-center mb-4">비밀번호 입력</h2>
         <p class="text-gray-400 text-center mb-6">TKP단가표 접근하려면 비밀번호를 입력하세요.</p>
-		<p class="text-gray-400 text-center mb-6">업데이트 2025.08.15</p>
-		<p class="text-gray-400 text-center mb-6">1.보안강화을 위해 비밀번호를 입력후 창이 활성화 됩니다.</p>
+		<p class="text-gray-400 text-center mb-6">업데이트 2025.09.04</p>
+		<p class="text-gray-400 text-center mb-6">1.사내 연락처 업데이트.</p>
         <form id="password-form">
             <input type="password" id="password-input" class="w-full text-center p-3 rounded-lg text-lg password-input" autocomplete="current-password">
             <p id="password-error" class="text-red-400 text-center mt-2 password-error-message"></p>
@@ -3236,7 +3485,6 @@ if (floatingBtn) {
 </div>
 
 </html>
-
 
 
 
