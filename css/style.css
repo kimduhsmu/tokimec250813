@@ -1,0 +1,572 @@
+:root {
+            --theme-bg: #111827;
+            --theme-bg-image: none;
+            --theme-text: #f9fafb;
+            --theme-muted: #94a3b8;
+            --theme-surface: #1f2937;
+            --theme-surface-soft: #374151;
+            --theme-border: #4b5563;
+            --theme-accent: #38bdf8;
+            --theme-watermark: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: var(--theme-bg);
+            background-image: var(--theme-bg-image);
+            background-attachment: fixed;
+            color: var(--theme-text);
+            overscroll-behavior-y: contain;
+        }
+
+        body[data-theme="dark"] {
+            --theme-bg: #111827;
+            --theme-bg-image: none;
+            --theme-text: #f9fafb;
+            --theme-muted: #94a3b8;
+            --theme-surface: #1f2937;
+            --theme-surface-soft: #374151;
+            --theme-border: #4b5563;
+            --theme-accent: #38bdf8;
+            --theme-watermark: rgba(255, 255, 255, 0.1);
+        }
+
+        body[data-theme="white"] {
+            --theme-bg: #f8fafc;
+            --theme-bg-image: none;
+            --theme-text: #0f172a;
+            --theme-muted: #475569;
+            --theme-surface: #ffffff;
+            --theme-surface-soft: #e2e8f0;
+            --theme-border: #cbd5e1;
+            --theme-accent: #0284c7;
+            --theme-watermark: rgba(15, 23, 42, 0.12);
+        }
+
+        body[data-theme="sky"] {
+            --theme-bg: #1a1b26;
+            --theme-bg-image: linear-gradient(155deg, #1a1b26 0%, #1f2335 52%, #24283b 100%);
+            --theme-text: #c0caf5;
+            --theme-muted: #9aa5ce;
+            --theme-surface: #24283b;
+            --theme-surface-soft: #2f354f;
+            --theme-border: #414868;
+            --theme-accent: #7aa2f7;
+            --theme-watermark: rgba(122, 162, 247, 0.14);
+        }
+
+        body[data-theme="gray"],
+        body[data-theme="iphone"] {
+            --theme-bg: #2b3139;
+            --theme-bg-image: linear-gradient(155deg, #2b3139 0%, #343b45 48%, #3f4651 100%);
+            --theme-text: #f3f4f6;
+            --theme-muted: #d1d5db;
+            --theme-surface: #3a414a;
+            --theme-surface-soft: #4b5563;
+            --theme-border: #6b7280;
+            --theme-accent: #cbd5e1;
+            --theme-watermark: rgba(243, 244, 246, 0.12);
+        }
+
+        /* Tab Styles */
+        .tab-button {
+            transition: all 0.3s ease;
+            border-color: transparent;
+        }
+
+        .tab-button.active {
+            border-color: var(--theme-accent);
+            color: var(--theme-accent);
+            background-color: var(--theme-surface);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* --- Main Menu Styles --- */
+        .main-menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 1rem;
+            width: 100%;
+            max-width: 600px;
+            aspect-ratio: 1 / 1;
+            /* Make it square */
+        }
+
+        /* Keep first-screen header links/buttons above the decorative watermark */
+        #selection-screen {
+            touch-action: manipulation;
+        }
+
+        #selection-screen header,
+        #selection-screen .main-menu-grid {
+            position: relative;
+            z-index: 10;
+        }
+
+        .menu-button {
+            background-color: var(--theme-surface);
+            border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 1rem;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            cursor: pointer;
+            border: 2px solid var(--theme-border);
+            color: var(--theme-text);
+            font-weight: 600;
+        }
+
+        .menu-button:hover {
+            background-color: var(--theme-surface-soft);
+            transform: translateY(-5px);
+            border-color: var(--theme-accent);
+        }
+
+        /* Common Dark Theme Styles */
+        .calc-body {
+            background-color: var(--theme-bg);
+            color: var(--theme-text);
+            position: relative;
+        }
+
+        .calc-panel {
+            background-color: var(--theme-surface);
+        }
+
+        /* Main panel for options */
+        .calc-select {
+            background-color: var(--theme-surface-soft);
+            border: 1px solid var(--theme-border);
+            color: var(--theme-text);
+        }
+
+        .calc-input {
+            background-color: var(--theme-surface-soft);
+            border: 1px solid var(--theme-border);
+            color: var(--theme-text);
+            -moz-appearance: textfield;
+            /* Firefox */
+        }
+
+        .calc-input::-webkit-outer-spin-button,
+        .calc-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        option {
+            background-color: var(--theme-surface-soft);
+            color: var(--theme-text);
+        }
+
+        .calc-select option:checked {
+            background-color: var(--theme-accent);
+            color: #f9fafb;
+        }
+
+        .calc-select:focus,
+        .calc-input:focus {
+            --tw-ring-color: var(--theme-accent);
+            border-color: var(--theme-accent);
+            outline: none;
+            box-shadow: 0 0 0 2px var(--tw-ring-color);
+        }
+
+        .calc-header {
+            color: var(--theme-accent);
+        }
+
+        .calc-price-box {
+            background-color: var(--theme-surface);
+        }
+
+        .calc-discount-price {
+            color: #4ade80;
+        }
+
+        .calc-final-price {
+            color: #facc15;
+        }
+
+        .calc-note-box {
+            background-color: var(--theme-surface-soft);
+            border-left: 4px solid #f59e0b;
+        }
+
+        .calc-option-label input {
+            margin-right: 0.5rem;
+        }
+
+        /* Watermark and Back Button Styles */
+        .watermark {
+            position: absolute;
+            top: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: clamp(2rem, 8vw, 4rem);
+            font-weight: bold;
+            color: var(--theme-watermark);
+            pointer-events: auto;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            z-index: 5;
+            white-space: nowrap;
+        }
+
+        .watermark-bottom {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: clamp(2rem, 8vw, 4rem);
+            font-weight: bold;
+            color: var(--theme-watermark);
+            pointer-events: auto;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            z-index: 5;
+            white-space: nowrap;
+        }
+
+        /* 계산 탭 내부 워터마크는 클릭을 가로채지 않도록 비활성화 */
+        .tab-content .watermark,
+        .tab-content .watermark-bottom {
+            pointer-events: none;
+        }
+
+        /* '뒤로' 버튼 스타일 수정 (position 관련 속성 제거) */
+        .back-button {
+            /* position: absolute; 속성을 제거하고 flex 컨테이너에 맞게 재배치 */
+            position: static !important;
+            background-color: var(--theme-surface-soft);
+            color: var(--theme-text);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            z-index: 10;
+            border: 2px solid #a3e635;
+            /* 연두색 테두리 추가 */
+        }
+
+        .back-button:hover {
+            background-color: var(--theme-surface);
+            box-shadow: 0 0 10px #a3e635;
+            /* 호버 시 그림자 효과 */
+        }
+
+        /* '기록' 버튼 스타일 추가 */
+        .history-button {
+            background-color: var(--theme-surface-soft);
+            color: var(--theme-text);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            z-index: 10;
+            border: 2px solid #f59e0b;
+            /* 주황색 테두리 */
+        }
+
+        .history-button:hover {
+            background-color: var(--theme-surface);
+            box-shadow: 0 0 10px #f59e0b;
+            /* 호버 시 그림자 효과 */
+        }
+
+        /* 계산 기록 아이템 스타일 */
+        .history-item {
+            background-color: var(--theme-surface);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--theme-accent);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .history-item:hover {
+            transform: translateX(5px);
+        }
+
+        /* Original Valve Price Card Styles */
+        .valve-price-card {
+            transition: all 0.3s ease-in-out;
+            opacity: 0;
+            transform: translateY(20px);
+            max-height: 0;
+            overflow: hidden;
+        }
+
+        .valve-price-card.show {
+            opacity: 1;
+            transform: translateY(0);
+            max-height: 500px;
+            /* 충분한 높이 */
+        }
+
+        #valve-no-results-message {
+            display: none;
+        }
+
+        /* --- 추가된 플로팅 뒤로가기 버튼 스타일 --- */
+        .floating-back-button {
+            position: fixed;
+            /* 화면에 고정 */
+            bottom: 1.5rem;
+            /* 하단에서 24px */
+            right: 1.5rem;
+            /* 우측에서 24px */
+            z-index: 50;
+            /* 다른 요소들 위에 보이도록 설정 */
+            background-color: #a3e635;
+            /* 기존 버튼의 연두색 테두리 색상 */
+            color: #1f2937;
+            /* 어두운 아이콘 색상 */
+            width: 4rem;
+            /* 너비 64px */
+            height: 4rem;
+            /* 높이 64px */
+            border-radius: 9999px;
+            /* 완전한 원 모양 */
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            opacity: 0;
+            /* 처음에는 투명하게 */
+            transform: translateY(100px);
+            /* 화면 아래에 숨겨두기 */
+            pointer-events: none;
+            /* 숨겨져 있을 때 클릭 안 되게 */
+        }
+
+        .floating-back-button.show {
+            opacity: 1;
+            /* 보이게 만들기 */
+            transform: translateY(0);
+            /* 제자리로 이동 */
+            pointer-events: auto;
+            /* 클릭 가능하게 */
+        }
+
+        .floating-back-button svg {
+            width: 2rem;
+            /* 아이콘 크기 32px */
+            height: 2rem;
+        }
+
+        .floating-history-container {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 1.5rem;
+            z-index: 50;
+            display: flex;
+            gap: 0.75rem;
+            /* 버튼 사이 간격 */
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            opacity: 0;
+            transform: translateY(100px);
+            pointer-events: none;
+        }
+
+        .floating-history-container.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .history-view-button {
+            background-color: var(--theme-surface-soft);
+            color: var(--theme-text);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: 2px solid #38bdf8;
+            /* 파란색 테두리 */
+        }
+
+        .history-view-button:hover {
+            background-color: var(--theme-surface);
+            box-shadow: 0 0 10px var(--theme-accent);
+        }
+
+        body[data-theme]:not([data-theme="dark"]) .bg-\[\#111827\],
+        body[data-theme]:not([data-theme="dark"]) .bg-gray-900,
+        body[data-theme]:not([data-theme="dark"]) .bg-gray-900\/50 {
+            background-color: var(--theme-bg) !important;
+        }
+
+        body[data-theme]:not([data-theme="dark"]) .bg-\[\#1f2937\],
+        body[data-theme]:not([data-theme="dark"]) .bg-gray-800 {
+            background-color: var(--theme-surface) !important;
+        }
+
+        body[data-theme]:not([data-theme="dark"]) .bg-gray-700,
+        body[data-theme]:not([data-theme="dark"]) .bg-gray-600 {
+            background-color: var(--theme-surface-soft) !important;
+        }
+
+        body[data-theme]:not([data-theme="dark"]) .border-gray-700,
+        body[data-theme]:not([data-theme="dark"]) .border-gray-600,
+        body[data-theme]:not([data-theme="dark"]) .border-gray-500 {
+            border-color: var(--theme-border) !important;
+        }
+
+        body[data-theme]:not([data-theme="dark"]) .text-white,
+        body[data-theme]:not([data-theme="dark"]) .text-gray-100,
+        body[data-theme]:not([data-theme="dark"]) .text-gray-200,
+        body[data-theme]:not([data-theme="dark"]) .text-gray-300,
+        body[data-theme]:not([data-theme="dark"]) .text-gray-400,
+        body[data-theme]:not([data-theme="dark"]) .text-gray-500 {
+            color: var(--theme-text) !important;
+        }
+
+        body[data-theme]:not([data-theme="dark"]) .text-gray-600,
+        body[data-theme]:not([data-theme="dark"]) .text-gray-700 {
+            color: var(--theme-muted) !important;
+        }
+
+        .theme-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.65);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 130;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .theme-modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .theme-modal-content {
+            width: min(92vw, 420px);
+            background-color: var(--theme-surface);
+            border: 1px solid var(--theme-border);
+            border-radius: 1rem;
+            padding: 1rem;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.35);
+            color: var(--theme-text);
+        }
+
+        .theme-option-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .theme-option-btn {
+            border: 1px solid var(--theme-border);
+            background-color: var(--theme-surface-soft);
+            color: var(--theme-text);
+            border-radius: 0.75rem;
+            padding: 0.6rem 0.75rem;
+            text-align: left;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .theme-option-btn.active {
+            border-color: var(--theme-accent);
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.35);
+        }
+
+        .theme-option-swatch {
+            display: inline-block;
+            width: 0.9rem;
+            height: 0.9rem;
+            border-radius: 9999px;
+            margin-right: 0.45rem;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            vertical-align: -2px;
+        }
+
+        html,
+        body {
+            min-height: 100dvh;
+            background-color: var(--theme-bg);
+        }
+
+        .password-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .password-modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .password-modal-content {
+            background-color: #1f2937;
+            /* calc-panel color */
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 380px;
+            border: 1px solid #374151;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .password-modal-overlay.show .password-modal-content {
+            transform: translateY(0);
+        }
+
+        .password-input {
+            background-color: #374151;
+            border: 1px solid #4b5563;
+            color: #f9fafb;
+            -moz-appearance: textfield;
+            /* Firefox */
+        }
+
+        .password-input:focus {
+            --tw-ring-color: #38bdf8;
+            border-color: #38bdf8;
+            outline: none;
+            box-shadow: 0 0 0 2px var(--tw-ring-color);
+        }
+
+        .password-error-message {
+            min-height: 1.5rem;
+            /* 24px */
+        }
+
+        #contact-table-body td,
+        #contact-table-body th {
+            white-space: nowrap;
+        }
