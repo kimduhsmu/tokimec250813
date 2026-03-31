@@ -9,7 +9,7 @@
 // 1. 캐시 설정
 // 앱의 중요 파일을 업데이트할 때마다 이 버전을 변경해주세요. (예: 'v6' -> 'v7')
 // 이 버전이 바뀌면 서비스 워커는 자동으로 업데이트를 진행합니다.
-const CACHE_NAME = 'tkp-price-list-cache-v11';
+const CACHE_NAME = 'tkp-price-list-cache-v12';
 const HTML_FILE_URLS = ['index.html', 'indexgpt.html'];
 
 // 앱이 설치될 때 캐시에 미리 저장할 파일 목록입니다.
