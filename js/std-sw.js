@@ -215,6 +215,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         let sensorPrice = sensor ? proximitySensorPrice : 0;
                         let rodExtensionPrice = 0;
                         let bellowsPrice = 0;
+                        let bellowsAutoRodExtensionPrice = 0;
                         let appliedBellowsStroke = 0;
                         let rexAppliedMm = 0;
                         let rexBlocks = 0;
@@ -227,6 +228,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
 
                         if (bellowsEnabled) {
+                            let bellowsPriceIsInquiry = false;
                             const bellowsLookupStroke = Math.min(calcStr, 1000);
                             const bellowsLookup = resolveBellowsPrice(stdSwBellowsPriceData, dia, rType, bellowsLookupStroke);
                             if (!bellowsLookup) {
@@ -236,23 +238,63 @@ document.addEventListener('DOMContentLoaded', function () {
                                 elements.finalTotalDisplay.textContent = '문의';
                                 return;
                             }
-                            if (bellowsLookup && bellowsLookup.price === 'inquiry') {
-                                elements.priceDisplay.textContent = '문의';
-                                elements.priceBreakdown.textContent = `자바라 ${dia}Ø ${rType}형 ${bellowsLookupStroke}ST: 문의`;
-                                elements.sellingPriceDisplay.textContent = '문의';
-                                elements.finalTotalDisplay.textContent = '문의';
-                                return;
-                            }
-                            if (bellowsLookup) {
+                            if (bellowsLookup.price === 'inquiry') {
+                                bellowsPriceIsInquiry = true;
+                            } else {
                                 const baseBellowsPrice = Number(bellowsLookup.price) || 0;
                                 bellowsPrice = baseBellowsPrice * bellowsMultiplier;
                                 if (bellowsPrice > 0) {
                                     appliedBellowsStroke = bellowsLookupStroke;
                                 }
                             }
+
+                            // 자바라로 인한 로드연장 자동 계산
+                            const bellowsRodDenominatorMap = {
+                                '40': 3.5, '50': 3.5,
+                                '63': 4, '80': 4, '100': 4,
+                                '125': 5
+                            };
+                            const bellowsRodDenominator = bellowsRodDenominatorMap[dia];
+                            if (bellowsRodDenominator) {
+                                const autoRexRaw = strVal / bellowsRodDenominator;
+                                const autoRexMm = Math.ceil(autoRexRaw / 50) * 50;
+                                const autoRexBlocks = autoRexMm / 50;
+                                const autoRexUnitRate = stdSwRodExtensionRateData[dia] || 0;
+                                bellowsAutoRodExtensionPrice = autoRexBlocks * autoRexUnitRate;
+                                const denomLabel = Number.isInteger(bellowsRodDenominator) ? String(bellowsRodDenominator) : bellowsRodDenominator.toFixed(1);
+                                if (bellowsPriceIsInquiry) {
+                                    // 자바라 가격 문의이지만 로드연장은 계산 가능 - 아래에서 처리
+                                }
+                                // bellowsPriceIsInquiry 여부와 무관하게 로드연장 자동계산값 저장 (breakdown은 아래에서 추가)
+                                if (bellowsAutoRodExtensionPrice > 0) {
+                                    // breakdown은 아래 breakdown 배열 생성 후 추가
+                                }
+                            }
+
+                            if (bellowsPriceIsInquiry) {
+                                // 로드연장 자동계산 포함하여 표시 후 종료
+                                const bellowsRodDenominatorMapLocal = { '40': 3.5, '50': 3.5, '63': 4, '80': 4, '100': 4, '125': 5 };
+                                const denom = bellowsRodDenominatorMapLocal[dia];
+                                let inquiryBreakdown = [];
+                                inquiryBreakdown.push(`자바라 ${dia}Ø ${rType}형 ${bellowsLookupStroke}ST: 담당자 문의`);
+                                if (denom && bellowsAutoRodExtensionPrice > 0) {
+                                    const autoRexRaw2 = strVal / denom;
+                                    const autoRexMm2 = Math.ceil(autoRexRaw2 / 50) * 50;
+                                    const autoRexBlocks2 = autoRexMm2 / 50;
+                                    const autoRexUnitRate2 = stdSwRodExtensionRateData[dia] || 0;
+                                    const denomLabel2 = Number.isInteger(denom) ? String(denom) : denom.toFixed(1);
+                                    inquiryBreakdown.push(`자바라 로드연장: 행정 ${strVal}ST ÷ ${denomLabel2} = ${autoRexRaw2.toFixed(1)}mm → 적용 ${autoRexMm2}mm (${autoRexBlocks2} x ${formatNumber(autoRexUnitRate2)}) = ${formatNumber(bellowsAutoRodExtensionPrice)}`);
+                                }
+                                inquiryBreakdown.push(`제조원가 합계: 문의 (자바라 가격 담당자 확인 필요)`);
+                                elements.priceDisplay.textContent = '문의';
+                                elements.priceBreakdown.textContent = inquiryBreakdown.join('\n');
+                                elements.sellingPriceDisplay.textContent = '문의';
+                                elements.finalTotalDisplay.textContent = '문의';
+                                return;
+                            }
                         }
 
-                        let subTotal = basePrice + mountingPrice + rodEndFittingPrice1 + rodEndFittingPrice2 + sensorPrice + cushionPrice + rodExtensionPrice + bellowsPrice;
+                        let subTotal = basePrice + mountingPrice + rodEndFittingPrice1 + rodEndFittingPrice2 + sensorPrice + cushionPrice + rodExtensionPrice + bellowsPrice + bellowsAutoRodExtensionPrice;
 
                         let breakdown = [];
                         let specialName = elements.special.options[elements.special.selectedIndex].text;
@@ -279,6 +321,18 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (bellowsPrice > 0) {
                             const bellowsMaterialLabel = isBellowsHeat ? '내열용(x2)' : '일반';
                             breakdown.push(`자바라(${bellowsMaterialLabel}): ${rType}형 ${appliedBellowsStroke}ST = ${formatNumber(bellowsPrice)}`);
+                        }
+                        if (bellowsAutoRodExtensionPrice > 0) {
+                            const bellowsRodDenominatorMap = { '40': 3.5, '50': 3.5, '63': 4, '80': 4, '100': 4, '125': 5 };
+                            const denom = bellowsRodDenominatorMap[dia];
+                            if (denom) {
+                                const autoRexRaw = strVal / denom;
+                                const autoRexMm = Math.ceil(autoRexRaw / 50) * 50;
+                                const autoRexBlocks = autoRexMm / 50;
+                                const autoRexUnitRate = stdSwRodExtensionRateData[dia] || 0;
+                                const denomLabel = Number.isInteger(denom) ? String(denom) : denom.toFixed(1);
+                                breakdown.push(`자바라 로드연장: 행정 ${strVal}ST ÷ ${denomLabel} = ${autoRexRaw.toFixed(1)}mm → 적용 ${autoRexMm}mm (${autoRexBlocks} x ${formatNumber(autoRexUnitRate)}) = ${formatNumber(bellowsAutoRodExtensionPrice)}`);
+                            }
                         }
                         if (breakdown.length > 0) breakdown.push(`제조원가 합계: ${formatNumber(subTotal)}`);
 

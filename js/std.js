@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         const rexInputMm = rexUsingCustom ? rexCustomVal : (parseInt(rodExtensionMmInput.value || '0', 10) || 0);
                         const csh = cushionCheckbox.checked;
                         const quantity = parseInt(quantityInput.value) || 1;
-                        let basePrice = 0, mountingPrice = 0, rodEndFittingPrice1 = 0, rodEndFittingPrice2 = 0, cushionPrice = 0, rodExtensionPrice = 0, bellowsPrice = 0;
+                        let basePrice = 0, mountingPrice = 0, rodEndFittingPrice1 = 0, rodEndFittingPrice2 = 0, cushionPrice = 0, rodExtensionPrice = 0, bellowsPrice = 0, bellowsAutoRodExtensionPrice = 0;
                         let rexAppliedMm = 0, rexUnitRate = 0, rexBlocks = 0, rexTypeLabel = '';
                         let breakdown = [];
 
@@ -266,6 +266,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
 
                             if (bellowsEnabled) {
+                                let bellowsPriceIsInquiry = false;
                                 const bellowsAppliedStroke = Math.min(calcStr, 1000);
                                 const bellowsLookup = resolveBellowsPrice(stdBellowsPriceData, dia, typ, bellowsAppliedStroke);
                                 if (!bellowsLookup) {
@@ -275,14 +276,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                     finalTotalDisplay.textContent = '문의';
                                     return;
                                 }
-                                if (bellowsLookup && bellowsLookup.price === 'inquiry') {
-                                    priceDisplay.textContent = '문의';
-                                    priceBreakdown.textContent = `자바라 ${dia}Ø ${typ}형 ${bellowsAppliedStroke}ST: 문의`;
-                                    sellingPriceDisplay.textContent = '문의';
-                                    finalTotalDisplay.textContent = '문의';
-                                    return;
-                                }
-                                if (bellowsLookup) {
+                                if (bellowsLookup.price === 'inquiry') {
+                                    bellowsPriceIsInquiry = true;
+                                    breakdown.push(`자바라 ${dia}Ø ${typ}형 ${bellowsAppliedStroke}ST: 담당자 문의`);
+                                } else {
                                     const baseBellowsPrice = Number(bellowsLookup.price) || 0;
                                     bellowsPrice = baseBellowsPrice * bellowsMultiplier;
                                     if (bellowsPrice > 0) {
@@ -290,6 +287,44 @@ document.addEventListener('DOMContentLoaded', function () {
                                         const bellowsMaterialLabel = isBellowsHeat ? '내열용(x2)' : '일반';
                                         breakdown.push(`자바라(${bellowsMaterialLabel}): ${bellowsTypeLabel} ${bellowsAppliedStroke}ST = ${formatNumber(bellowsPrice)}`);
                                     }
+                                }
+
+                                // 자바라로 인한 로드연장 자동 계산
+                                const bellowsRodDenominatorMap = {
+                                    '40': 3.5, '50': 3.5,
+                                    '63': 4, '80': 4, '100': 4,
+                                    '125': 5, '140': 5, '150': 5, '160': 5, '180': 5, '200': 5,
+                                    '250': 6
+                                };
+                                const bellowsRodDenominator = bellowsRodDenominatorMap[dia];
+                                if (bellowsRodDenominator) {
+                                    const autoRexRaw = strVal / bellowsRodDenominator;
+                                    const autoRexMm = Math.ceil(autoRexRaw / 50) * 50;
+                                    const autoRexBlocks = autoRexMm / 50;
+                                    const autoRexType = typ === 'A' ? 'A' : (typ === 'C' ? 'C' : 'B');
+                                    const autoRexRateRaw = stdRodExtensionRateData[dia]?.[autoRexType];
+                                    if (autoRexRateRaw === 'inquiry') {
+                                        priceDisplay.textContent = '문의';
+                                        priceBreakdown.textContent = `자바라 로드연장 ${dia}Ø ${autoRexType}형: 문의`;
+                                        sellingPriceDisplay.textContent = '문의';
+                                        finalTotalDisplay.textContent = '문의';
+                                        return;
+                                    }
+                                    const autoRexUnitRate = autoRexRateRaw || 0;
+                                    bellowsAutoRodExtensionPrice = autoRexBlocks * autoRexUnitRate;
+                                    const denomLabel = Number.isInteger(bellowsRodDenominator) ? String(bellowsRodDenominator) : bellowsRodDenominator.toFixed(1);
+                                    if (bellowsAutoRodExtensionPrice > 0) {
+                                        breakdown.push(`자바라 로드연장: 행정 ${strVal}ST ÷ ${denomLabel} = ${autoRexRaw.toFixed(1)}mm → 적용 ${autoRexMm}mm (${autoRexType}형 ${autoRexBlocks} x ${formatNumber(autoRexUnitRate)}) = ${formatNumber(bellowsAutoRodExtensionPrice)}`);
+                                    }
+                                }
+
+                                if (bellowsPriceIsInquiry) {
+                                    breakdown.push(`제조원가 합계: 문의 (자바라 가격 담당자 확인 필요)`);
+                                    priceDisplay.textContent = '문의';
+                                    priceBreakdown.textContent = breakdown.join('\n');
+                                    sellingPriceDisplay.textContent = '문의';
+                                    finalTotalDisplay.textContent = '문의';
+                                    return;
                                 }
                             }
                         }
@@ -330,7 +365,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                         }
 
-                        let subTotal = basePrice + mountingPrice + rodEndFittingPrice1 + rodEndFittingPrice2 + cushionPrice + rodExtensionPrice + bellowsPrice;
+                        let subTotal = basePrice + mountingPrice + rodEndFittingPrice1 + rodEndFittingPrice2 + cushionPrice + rodExtensionPrice + bellowsPrice + bellowsAutoRodExtensionPrice;
                         priceDisplay.textContent = `₩ ${formatNumber(subTotal)}`;
                         if (breakdown.length > 0) {
                             breakdown.push(`제조원가 합계: ${formatNumber(subTotal)}`);
